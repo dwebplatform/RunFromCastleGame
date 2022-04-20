@@ -37,7 +37,6 @@ public class AirNearWallState : GroundedState
   public override void LogicUpdate()
   {
     base.LogicUpdate();
-
     float horizontalInput = PlayerController.horizontalInput;
     bool isObstacleIgnored = IsObstacleIgnored();
     if (_player.closestWall != null)
@@ -47,12 +46,17 @@ public class AirNearWallState : GroundedState
       {
         if (CollisionUtils.IsWallInFront(normal, PlayerController.horizontalInput))
         {
-          
+            _playerController.ChangeState(PlayerController.grabbingWallState);
         }
         else
         {
           _playerController.ChangeState(PlayerController.fallingFreeFromWallState);
         }
+      }
+    } else{
+
+      if(Mathf.Abs(PlayerController.horizontalInput)>Mathf.Epsilon){
+        _playerController.ChangeState(PlayerController.fallingFreeFromWallState);
       }
     }
     if (_isGrounded && !isObstacleIgnored)
@@ -74,7 +78,6 @@ public class AirNearWallState : GroundedState
     }
     if (!isObstacleIgnored)
     {
-      //   _player.closestWall
       _playerController.collisionManager.WallCheck(Player.WALL_OFFSET,
  (rightCollider, isHitted) =>
 {
@@ -100,7 +103,8 @@ public class AirNearWallState : GroundedState
   _player.closestWall.collider = leftCollidedInfo.collider;
   _player.closestWall.normal = leftCollidedInfo.normal;
   _player.transform.position = CollisionUtils.AdjustPositionLeft(leftCollidedInfo, _player);
-});
+  });
+
     }
   }
   public override void Exit()

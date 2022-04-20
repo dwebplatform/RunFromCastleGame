@@ -33,8 +33,8 @@ public class IdleState : GroundedState
     base.LogicUpdate();
      
     if(Input.GetKey(KeyCode.Space)){
-      if(wallInfo != null){
-          _player.closestWall = wallInfo;
+      if(_player.closestWall != null){
+          // _player.closestWall = wallInfo;
           _playerController.ChangeState(PlayerController.airNearWallState);
       } else {
         _playerController.ChangeState(PlayerController.jumpingState);
@@ -57,9 +57,9 @@ public class IdleState : GroundedState
     return;
   }
   
-  wallInfo = new WallInfo();
-  wallInfo.collider = rightCollider.collider;
-  wallInfo.normal = rightCollider.normal;
+  _player.closestWall = new WallInfo();
+  _player.closestWall.collider = rightCollider.collider;
+  _player.closestWall.normal = rightCollider.normal;
   _player.transform.position = CollisionUtils.AdjustPositionRight(rightCollider, _player);
   }, 
   (leftCollidedInfo, isHitted) =>
@@ -69,11 +69,13 @@ public class IdleState : GroundedState
   {
     return;
   }
-    wallInfo = new WallInfo();
-    wallInfo.collider = leftCollidedInfo.collider;
-    wallInfo.normal = leftCollidedInfo.normal;
+    _player.closestWall = new WallInfo();
+    _player.closestWall.collider = leftCollidedInfo.collider;
+    _player.closestWall.normal = leftCollidedInfo.normal;
     _player.transform.position = CollisionUtils.AdjustPositionLeft(leftCollidedInfo, _player); 
   });
- 
+  if(!(hittedParams.isHittedLeft||hittedParams.isHittedRight)){
+    _player.closestWall = null;
+  }
   }
 }

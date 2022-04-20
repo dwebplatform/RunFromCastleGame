@@ -2,11 +2,11 @@ using UnityEngine;
 public class GrabbingWallState : BaseState
 {
   private PlayerController _playerController;
-
   private float _offset = 0.1f;
   private Player _player;
   private bool _isGrounded;
   HittedParams hittedParams;
+  private float _jumpForce = 5f;
   public GrabbingWallState(string name, PlayerController playerController, Player player) : base(name)
   {
     _player = player;
@@ -29,11 +29,26 @@ public class GrabbingWallState : BaseState
     if (_player.closestWall != null)
     {
       Vector2 normal = _player.closestWall.normal;
+
+      if(Input.GetKeyDown(KeyCode.Space)){
+        float horizontalInput = PlayerController.horizontalInput;
+        if(Mathf.Abs(horizontalInput)>Mathf.Epsilon){
+          //* заходим только, если направление противоположно стенке:
+          if(horizontalInput>0f && normal.x<0f ||horizontalInput<0f && normal.x>0f){
+            _playerController.ChangeState(PlayerController.recoilFromWallWithHorizontalEffectState);
+          }
+        } else {
+          // textObj.text ="SIMPLE RECOIL //TODO";
+          _playerController.ChangeState(PlayerController.recoilFromWallState);
+          //* если нулевый инпут, то, нам повезло, и мы делаем простой отскок
+        }
+      }
+      
       if (Mathf.Abs(PlayerController.horizontalInput) > 0f)
       {
         if (CollisionUtils.IsWallInFront(normal, PlayerController.horizontalInput))
         {
-
+          
         }
         else
         {
@@ -41,7 +56,7 @@ public class GrabbingWallState : BaseState
         }
       }
     }
-    }
+  }
   public override void Exit()
   {
     base.Exit();
@@ -86,8 +101,8 @@ public class GrabbingWallState : BaseState
     _player.closestWall.collider = leftCollidedInfo.collider;
     _player.closestWall.normal = leftCollidedInfo.normal;
     _player.transform.position = CollisionUtils.AdjustPositionLeft(leftCollidedInfo, _player);
-
   });
+
     if (!_isGrounded)
     {
       _player.velocity.y -= (Player.GRAVITY / 2) * Time.fixedDeltaTime;

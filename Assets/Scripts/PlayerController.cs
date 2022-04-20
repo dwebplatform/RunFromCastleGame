@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -13,23 +11,30 @@ public class PlayerController : MonoBehaviour
   public static WalkingState walkingState;
   public static JumpingState jumpingState;
   public static AirNearWallState airNearWallState;
+  public static AirNearWallWithExtraInputState airNearWallWithExtraInputState;
   public static FallingFreeFromWallState fallingFreeFromWallState;
-
   public static GrabbingWallState grabbingWallState;
+  public static RecoilFromWallWithHorizontalEffectState recoilFromWallWithHorizontalEffectState;
+
+  public static RecoilFromWallState recoilFromWallState;
   private BaseState _currentState;
   private void Awake()
-  { 
-    _rigidBody = GetComponent<Rigidbody2D>();  
+  {
+    _rigidBody = GetComponent<Rigidbody2D>();
     _boxCollider = GetComponent<BoxCollider2D>();
     player = new Player(_boxCollider, transform);
     collisionManager = new CollisionManager(player);
-    
+
     PlayerController.idleState = new IdleState("Idle", this, player);
     PlayerController.walkingState = new WalkingState("Walking", this, player);
-    PlayerController.jumpingState = new JumpingState("Jumping",this, player);
-    PlayerController.airNearWallState = new AirNearWallState("AirNearWallState",this, player);
-    PlayerController.fallingFreeFromWallState = new FallingFreeFromWallState("FallingFreeFromState",this, player);
+    PlayerController.jumpingState = new JumpingState("Jumping", this, player);
+    PlayerController.airNearWallState = new AirNearWallState("AirNearWallState", this, player);
+    PlayerController.fallingFreeFromWallState = new FallingFreeFromWallState("FallingFreeFromState", this, player);
     PlayerController.grabbingWallState = new GrabbingWallState("GrabbingWallState", this, player);
+    PlayerController.recoilFromWallState = new RecoilFromWallState("RecoilFromState",this, player);
+    PlayerController.recoilFromWallWithHorizontalEffectState = new RecoilFromWallWithHorizontalEffectState("RecoilFromWallWithHorizontalEffectState",this,player);
+    PlayerController.airNearWallWithExtraInputState = new AirNearWallWithExtraInputState("AirNearWallWithExtraInputState", this, player);
+    //* 
     Initialize();
   }
   void Initialize()

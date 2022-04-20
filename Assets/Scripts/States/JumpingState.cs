@@ -96,9 +96,9 @@ public class JumpingState : BaseState
 
   });
 
-    if(!hittedParams.isHittedLeft && !hittedParams.isHittedRight){
-      _player.closestWall = null;
-    }
+    // if(!hittedParams.isHittedLeft && !hittedParams.isHittedRight){
+    //   _player.closestWall = null;
+    // }
     if(!_isGrounded){
         _player.velocity.y-=Player.GRAVITY*Time.fixedDeltaTime;
     }

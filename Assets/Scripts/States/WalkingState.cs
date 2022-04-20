@@ -19,21 +19,20 @@ public class WalkingState : GroundedState
   public override void HandleInput()
   {
     base.HandleInput();
-    if (Input.GetKeyDown(KeyCode.Space))
-    {
-      if (_player.closestWall != null)
-      {
-        _playerController.ChangeState(PlayerController.airNearWallState);
-      }
-      else
-      {
-        _playerController.ChangeState(PlayerController.jumpingState);
-      }
-    }
+    
   }
   public override void LogicUpdate()
   {
     base.LogicUpdate();
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+      if(_player.closestWall != null){
+        //* airNearWallWithInitialSpeedState
+        _playerController.ChangeState(PlayerController.airNearWallWithExtraInputState);
+      } else {
+        _playerController.ChangeState(PlayerController.jumpingState);
+      }
+    }
     if (Mathf.Abs(PlayerController.horizontalInput) < Mathf.Epsilon)
     {
       _playerController.ChangeState(PlayerController.idleState);
@@ -66,11 +65,10 @@ public class WalkingState : GroundedState
   _player.closestWall.collider = leftCollidedInfo.collider;
   _player.closestWall.normal = leftCollidedInfo.normal;
 });
-    if (!hittedParams.isHittedLeft && !hittedParams.isHittedRight)
+    if (!(hittedParams.isHittedLeft || hittedParams.isHittedRight))
     {
       _player.closestWall = null;
     }
-
     if (_player.closestWall != null)
     {
       Vector2 normal = _player.closestWall.normal;
@@ -92,7 +90,7 @@ public class WalkingState : GroundedState
       Vector2 normal = closestWall.normal;
       if (CollisionUtils.IsWallInFront(normal, PlayerController.horizontalInput))
       {
-        return new Vector2(0, _player.velocity.y);
+        return new Vector2(0f, _player.velocity.y);
       }
       else
       {
